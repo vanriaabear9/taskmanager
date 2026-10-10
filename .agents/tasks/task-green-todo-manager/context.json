@@ -1,0 +1,28 @@
+{
+  "project_type": "Expo SDK 57.0 React Native mobile app with TypeScript",
+  "language": "TypeScript",
+  "build_system": "Expo CLI with npm - uses expo-router for file-based routing in src/app/",
+  "test_framework": "None configured in package.json",
+  "build_command": "npx tsc --noEmit",
+  "test_command": "npx tsc --noEmit && npx expo lint",
+  "verification_instructions": "1. Run `npx tsc --noEmit` to typecheck. 2. Run `npx expo lint` to lint. 3. Start dev server with `npx expo start` and test on iOS/Android/web. 4. Verify all screens render without errors.",
+  "snapshot_or_generated_files": null,
+  "environment_constraints": "AsyncStorage not installed (needs `npx expo install`). expo-linear-gradient not installed (use plain View with backgroundColor for gradients). Tab icons for calendar/settings not available (use emoji or text). User will provide tasklogo.png - reference it but use placeholder if missing. NativeTabs API is from 'expo-router/unstable-native-tabs'. Avoid @react-native-community/datetimepicker (needs dev build) - use TextInput with date format instead.",
+  "contribution_requirements": "Per AGENTS.md: Always use `npx expo install <package>` instead of npm/yarn/pnpm for dependencies. Run lint and typecheck before declaring tasks done. Use Expo Router for navigation (routes in src/app/). Keep non-route code (components, hooks, utils) outside src/app/. If ios/ and android/ directories don't exist, they are generated - never create or edit them. Fetch versioned docs at https://docs.expo.dev/versions/v57.0.0/ before using Expo APIs.",
+  "key_patterns": "Theme system: Colors object in src/constants/theme.ts with light/dark modes. Use useTheme() hook to access colors. ThemedView and ThemedText components apply theme colors. Spacing constants (Spacing.one through Spacing.six) defined in theme.ts. Path alias @/ maps to src/. NativeTabs component pattern: see src/components/app-tabs.tsx - uses NativeTabs with Trigger components for each tab. SafeAreaView from react-native-safe-area-context for safe areas. StyleSheet.create for styles. BottomTabInset constant accounts for tab bar height.",
+  "relevant_files": [
+    "src/app/_layout.tsx",
+    "src/app/index.tsx",
+    "src/app/explore.tsx",
+    "src/components/app-tabs.tsx",
+    "src/constants/theme.ts",
+    "src/hooks/use-theme.ts",
+    "src/hooks/use-color-scheme.ts",
+    "src/components/themed-view.tsx",
+    "src/components/themed-text.tsx",
+    "package.json",
+    "tsconfig.json",
+    "app.json"
+  ],
+  "directory_structure": "src/app/ = routes (index.tsx, explore.tsx, _layout.tsx). src/components/ = reusable components (app-tabs.tsx, themed-*.tsx, ui/). src/constants/ = theme constants. src/hooks/ = custom hooks. src/types/ = TypeScript types (to be created). src/utils/ = utilities (to be created). assets/images/ = image assets including tabIcons/. Path aliases: @/ -> src/, @/assets/ -> assets/"
+}

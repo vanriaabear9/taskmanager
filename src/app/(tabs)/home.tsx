@@ -1,6 +1,3 @@
-/**
- * Home screen - Green header with greeting, week selector, stats cards, task list, floating add button
- */
 import { AddTaskModal } from '@/components/add-task-modal';
 import { TaskItem } from '@/components/task-item';
 import { ThemedText } from '@/components/themed-text';
@@ -8,6 +5,7 @@ import { WeekDateSelector } from '@/components/week-date-selector';
 import { BottomTabInset, GreenTheme, Spacing } from '@/constants/theme';
 import { useTasks } from '@/hooks/use-tasks';
 import type { Task } from '@/types/task';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { FlatList, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 
@@ -46,13 +44,18 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Green Header */}
-        <View style={styles.header}>
+        {/* Green Gradient Header */}
+        <LinearGradient
+          colors={[GreenTheme.gradientStart, GreenTheme.gradientMid, GreenTheme.gradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
           <ThemedText style={styles.greeting}>
             Good day, Van! One small task at a time is still progress
           </ThemedText>
           <WeekDateSelector />
-        </View>
+        </LinearGradient>
 
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
@@ -128,16 +131,18 @@ const styles = StyleSheet.create({
     backgroundColor: GreenTheme.white,
   },
   header: {
-    backgroundColor: GreenTheme.gradientStart,
-    paddingTop: Spacing.four,
-    paddingBottom: Spacing.four,
+    paddingTop: Spacing.six,
+    paddingBottom: Spacing.five,
     paddingHorizontal: Spacing.three,
+    minHeight: 220,
   },
   greeting: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: GreenTheme.white,
-    lineHeight: 26,
+    lineHeight: 28,
+    marginTop: Spacing.three,
+    marginBottom: Spacing.four,
   },
   statsContainer: {
     flexDirection: 'row',

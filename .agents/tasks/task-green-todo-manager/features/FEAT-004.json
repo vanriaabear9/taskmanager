@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Build Home screen with green gradient header, week date selector, stats cards, task list, and floating add button. Header shows greeting and horizontal scrollable week dates. Stats show Total/Completed/Pending counts. Task list shows each task with title, category badge, deadline, checkbox, edit, delete buttons.",
+  "status": "completed",
+  "steps": [
+    "Create src/components/week-date-selector.tsx: horizontal ScrollView with current week dates (Mon 20, Tue 21, etc.), calculate dates for current week, highlight selected date, use GreenTheme colors",
+    "Create src/components/task-item.tsx: single task row component accepting Task prop and onToggle/onEdit/onDelete callbacks, displays title, category badge (Personal/School with green background), deadline formatted, checkbox using Pressable, edit icon button, delete icon button, follows ThemedView pattern",
+    "Create src/components/add-task-modal.tsx: Modal with TextInput for title, two buttons for category selection (Personal/School), TextInput for deadline (placeholder 'YYYY-MM-DD'), toggle switch for priority, Submit button closes modal and calls onSubmit callback with new task data, Cancel button, green theme styling",
+    "Create src/app/(tabs)/home.tsx: green gradient header View (backgroundColor with GreenTheme.gradientStart since expo-linear-gradient not installed), greeting text 'Good day, Van! One small task at a time is still progress', WeekDateSelector component, white background section with 3 stat cards (View components) showing totalCount/completedThisWeek/pendingCount from useTasks hook, FlatList of tasks using TaskItem component, floating Pressable button (green circle with + text) positioned bottom-right above tab bar using absolute positioning, useState for modal visibility and selected task for editing, integrate useTasks hook for data and operations"
+  ],
+  "acceptance_criteria": [
+    "Home screen renders with all sections: header, week selector, stats, task list, add button",
+    "Header displays green background with greeting and week dates",
+    "Stats cards show correct counts from useTasks",
+    "Task list displays all tasks with proper formatting",
+    "Tapping + button opens add modal",
+    "Add modal accepts input and creates new task",
+    "Task checkbox toggles completion",
+    "Edit button opens modal with existing task data",
+    "Delete button removes task"
+  ],
+  "verification": [
+    "Run `npx tsc --noEmit` to verify TypeScript",
+    "Run `npx expo start` and navigate to Home tab",
+    "Verify all UI elements render correctly",
+    "Test add/edit/delete/toggle operations",
+    "Verify stats update after operations"
+  ],
+  "blocked_reason": null,
+  "findings": "All acceptance criteria met. Created WeekDateSelector component with horizontal scrolling week dates (Sun-Sat format) and selection highlighting. Created TaskItem component displaying task title, category badge (Personal/School with green styling), formatted deadline, completion checkbox, and edit/delete action buttons with confirmation dialog. Created AddTaskModal using React key prop pattern to properly reset state between add/edit modes - modal includes title input, category selection buttons, deadline input (YYYY-MM-DD format), priority toggle switch, and submit/cancel buttons. Built complete Home screen with green header (backgroundColor using GreenTheme.gradientStart), greeting text, WeekDateSelector integration, 3 stat cards showing totalCount/completedThisWeek/pendingCount from useTasks hook, FlatList with TaskItem components, and floating add button positioned bottom-right with absolute positioning (bottom: BottomTabInset + 20). All CRUD operations integrated: add task, edit task (pre-populates modal), delete task (with confirmation), toggle completion. TypeScript compilation passes. Linting passes for all new files (pre-existing lint error in src/hooks/use-color-scheme.web.ts is unrelated to this feature). Committed as 'feat: build Home screen with stats, task list, and add modal (FEAT-004)'."
+}

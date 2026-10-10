@@ -1,7 +1,9 @@
 /**
  * AddTaskModal - Modal for adding or editing tasks
- * Inputs: title, category (Personal/School), deadline (YYYY-MM-DD), priority toggle
+ * Inputs: title, category (Personal/School), deadline (date + time pickers), priority toggle
  */
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+
 import { ThemedText } from '@/components/themed-text';
 import { GreenTheme, Spacing } from '@/constants/theme';
 import type { Task } from '@/types/task';
@@ -34,13 +36,45 @@ export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskMo
   // Derive initial values from editTask
   const initialTitle = editTask?.title ?? '';
   const initialCategory = editTask?.category ?? 'personal';
-  const initialDeadline = editTask?.deadline ?? '';
+  const initialDeadline = editTask?.deadline ? new Date(editTask.deadline) : new Date();
   const initialPriority = editTask?.isPriority ?? false;
   
   const [title, setTitle] = useState(initialTitle);
   const [category, setCategory] = useState<'personal' | 'school'>(initialCategory);
-  const [deadline, setDeadline] = useState(initialDeadline);
+  const [deadlineDate, setDeadlineDate] = useState(initialDeadline);
   const [isPriority, setIsPriority] = useState(initialPriority);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const handleDateChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDeadlineDate(selectedDate);
+    }
+  };
+
+  const handleTimeChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowTimePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDeadlineDate(selectedDate);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
 
   const handleSubmit = () => {
     if (!title.trim()) {
@@ -50,7 +84,7 @@ export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskMo
     onSubmit({
       title: title.trim(),
       category,
-      deadline: deadline || new Date().toISOString().split('T')[0],
+      deadline: deadlineDate.toISOString(),
       isPriority,
     });
 
@@ -134,16 +168,50 @@ export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskMo
               </View>
             </View>
 
-            {/* Deadline Input */}
+            {/* Deadline Date & Time Pickers */}
             <View style={styles.section}>
               <ThemedText style={styles.label}>Deadline</ThemedText>
-              <TextInput
-                style={styles.input}
-                placeholder="YYYY-MM-DD"
-                value={deadline}
-                onChangeText={setDeadline}
-                placeholderTextColor={GreenTheme.gray}
-              />
+              
+              {/* Date Picker Button */}
+              <Pressable 
+                onPress={() => setShowDatePicker(true)}
+                style={styles.dateTimeButton}
+              >
+                <ThemedText style={styles.dateTimeButtonText}>
+                  📅 {formatDate(deadlineDate)}
+                </ThemedText>
+              </Pressable>
+
+              {/* Time Picker Button */}
+              <Pressable 
+                onPress={() => setShowTimePicker(true)}
+                style={[styles.dateTimeButton, { marginTop: Spacing.two }]}
+              >
+                <ThemedText style={styles.dateTimeButtonText}>
+                  🕐 {formatTime(deadlineDate)}
+                </ThemedText>
+              </Pressable>
+
+              {/* Date Picker Modal */}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={deadlineDate}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={handleDateChange}
+                  minimumDate={new Date()}
+                />
+              )}
+
+              {/* Time Picker Modal */}
+              {showTimePicker && (
+                <DateTimePicker
+                  value={deadlineDate}
+                  mode="time"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={handleTimeChange}
+                />
+              )}
             </View>
 
             {/* Priority Toggle */}
@@ -248,6 +316,19 @@ const styles = StyleSheet.create({
   },
   categoryButtonTextActive: {
     color: GreenTheme.primary,
+  },
+  dateTimeButton: {
+    borderWidth: 1,
+    borderColor: GreenTheme.lightGray,
+    borderRadius: 12,
+    padding: Spacing.three,
+    backgroundColor: GreenTheme.white,
+    alignItems: 'center',
+  },
+  dateTimeButtonText: {
+    fontSize: 16,
+    color: GreenTheme.black,
+    fontWeight: '500',
   },
   priorityRow: {
     flexDirection: 'row',

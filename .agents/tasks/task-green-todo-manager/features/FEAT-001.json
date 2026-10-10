@@ -1,0 +1,21 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Install required dependencies and add green theme constants. Installs @react-native-async-storage/async-storage for task persistence. Extends src/constants/theme.ts with GreenTheme color palette (primary #4CAF50, dark #2E7D32, light #81C784, gradients, etc.) without removing existing Colors export.",
+  "status": "completed",
+  "steps": [
+    "Run `npx expo install @react-native-async-storage/async-storage` to install AsyncStorage",
+    "Open src/constants/theme.ts and add the GreenTheme export with all green color constants (primary, dark, medium, light, pale, accent, text, gradientStart, gradientEnd) after the existing Colors and ThemeColor exports"
+  ],
+  "acceptance_criteria": [
+    "@react-native-async-storage/async-storage appears in package.json dependencies",
+    "GreenTheme is exported from src/constants/theme.ts with all required green color values",
+    "Existing Colors export and theme system remain unchanged"
+  ],
+  "verification": [
+    "Run `npx tsc --noEmit` to confirm TypeScript compiles without errors",
+    "Import GreenTheme in a test file to verify it exports correctly"
+  ],
+  "blocked_reason": null,
+  "findings": "All acceptance criteria met. AsyncStorage v2.2.0 installed successfully. GreenTheme exported with complete color palette. TypeScript compilation passed without errors."
+}

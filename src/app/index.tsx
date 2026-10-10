@@ -14,11 +14,11 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Task Logo or Green Placeholder */}
+          {/* Task Logo - Placeholder until tasklogo2.png is added */}
           <View style={styles.logoContainer}>
-            {/* Green placeholder - will be replaced when tasklogo.png is added */}
             <View style={styles.logoPlaceholder}>
-              <ThemedText style={styles.logoEmoji}>✓</ThemedText>
+              <ThemedText style={styles.checkEmoji}>✓</ThemedText>
+              <ThemedText style={styles.placeholderText}>Task Manager</ThemedText>
             </View>
           </View>
 
@@ -63,23 +63,35 @@ const styles = StyleSheet.create({
     gap: Spacing.four,
   },
   logoContainer: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: Spacing.four,
   },
+  logo: {
+    width: 280,
+    height: 280,
+  },
   logoPlaceholder: {
-    width: 150,
-    height: 150,
-    backgroundColor: GreenTheme.primary,
-    borderRadius: 20,
+    width: 280,
+    height: 280,
+    backgroundColor: GreenTheme.pale,
+    borderRadius: 30,
+    borderWidth: 3,
+    borderColor: GreenTheme.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: Spacing.two,
   },
-  logoEmoji: {
-    fontSize: 80,
-    color: GreenTheme.white,
+  checkEmoji: {
+    fontSize: 120,
+    color: GreenTheme.primary,
+  },
+  placeholderText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: GreenTheme.primary,
   },
   title: {
     fontSize: 32,

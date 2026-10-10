@@ -1,0 +1,7 @@
+{
+  "task_id": "task-green-todo-manager",
+  "task_description": "Build a complete green-themed task management mobile app with welcome screen, tab navigation (Home, Tasks, Calendar-disabled, Settings-disabled), task CRUD operations with categories, priorities, deadlines, and weekly completion tracking",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null
+}

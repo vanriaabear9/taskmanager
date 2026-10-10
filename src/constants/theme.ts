@@ -75,8 +75,10 @@ export const GreenTheme = {
   pale: '#C8E6C9',           // Very light green for backgrounds
   accent: '#66BB6A',         // Accent green for highlights
   text: '#1B5E20',           // Dark green for text
-  gradientStart: '#66BB6A',  // Gradient start color
-  gradientEnd: '#4CAF50',    // Gradient end color
+  // New gradient colors matching the teal-cyan to green to blue gradient
+  gradientStart: '#1a8c99',  // Teal/cyan start
+  gradientMid: '#3db878',    // Green middle
+  gradientEnd: '#2a5f8f',    // Blue end
   white: '#FFFFFF',          // White for contrast
   black: '#000000',          // Black for text
   gray: '#757575',           // Gray for secondary text
