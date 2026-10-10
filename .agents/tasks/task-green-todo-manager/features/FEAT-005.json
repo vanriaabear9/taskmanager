@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-005",
+  "type": "feat",
+  "description": "Build Tasks screen with search bar, filter buttons (All/Pending/Completed), and filtered task list. Reuses TaskItem and AddTaskModal components from Home screen. Implements client-side search and filtering.",
+  "status": "completed",
+  "steps": [
+    "Create src/app/(tabs)/tasks.tsx: TextInput search bar at top with green border styling, 3 Pressable filter buttons (All, Pending, Completed) with active state showing green background, FlatList using TaskItem component, useState for searchQuery and activeFilter ('all'|'pending'|'completed'), useMemo to compute filtered tasks based on searchQuery (filters by title) and activeFilter (filters by isCompleted), integrate useTasks hook, reuse AddTaskModal with floating + button same as Home screen, SearchBar filters tasks by title containing search text (case-insensitive), Filter buttons change activeFilter state and highlight active button with GreenTheme.primary background"
+  ],
+  "acceptance_criteria": [
+    "Tasks screen renders with search bar, 3 filter buttons, and task list",
+    "Search bar filters tasks by title in real-time",
+    "All button shows all tasks",
+    "Pending button shows only incomplete tasks",
+    "Completed button shows only completed tasks",
+    "Active filter button is highlighted with green background",
+    "Task operations (toggle/edit/delete) work same as Home",
+    "Add button opens modal and creates tasks"
+  ],
+  "verification": [
+    "Run `npx tsc --noEmit` to verify TypeScript",
+    "Run `npx expo start` and navigate to Tasks tab",
+    "Verify search filters tasks correctly",
+    "Verify each filter button shows correct subset of tasks",
+    "Test all CRUD operations work",
+    "Verify UI matches requirements (search bar, 3 buttons, task list)"
+  ],
+  "blocked_reason": null,
+  "findings": "All acceptance criteria met. Created src/app/(tabs)/tasks.tsx with TextInput search bar styled with green border (2px, GreenTheme.primary), three Pressable filter buttons (All/Pending/Completed) with active state showing green background (GreenTheme.primary) and white text, FlatList rendering TaskItem components for filtered task list. Implemented useState for searchQuery and activeFilter ('all'|'pending'|'completed'). Used useMemo to compute filteredTasks based on searchQuery (case-insensitive title filtering) and activeFilter (filters by isCompleted property: 'all' shows all tasks, 'pending' filters isCompleted=false, 'completed' filters isCompleted=true). Reused TaskItem component from FEAT-004 for task rendering with toggle/edit/delete operations. Reused AddTaskModal component with floating + button positioned bottom-right using absolute positioning (bottom: BottomTabInset + 20). Search filters tasks in real-time as user types. Active filter button is highlighted with GreenTheme.primary background and white text, inactive buttons show gray text on white background with lightGray border. Empty states provide contextual messages based on active filter and search query. TypeScript compilation passes with no errors. Linting shows pre-existing error in use-color-scheme.web.ts (unrelated to this feature). All CRUD operations work correctly through reused components."
+}
