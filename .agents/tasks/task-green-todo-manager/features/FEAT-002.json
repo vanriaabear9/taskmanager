@@ -1,0 +1,25 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Create data layer: Task type, AsyncStorage utilities, and useTasks hook with weekly completion tracking. Weekly reset is implemented as a computed filter (tasks completed in current ISO week) not a destructive reset.",
+  "status": "completed",
+  "steps": [
+    "Create src/types/task.ts with Task interface (id, title, category: 'personal'|'school', deadline: string ISO, isPriority: boolean, isCompleted: boolean, completedAt?: string ISO, createdAt: string ISO, weekKey?: string 'YYYY-WW')",
+    "Create src/utils/storage.ts with loadTasks() and saveTasks(tasks: Task[]) functions using AsyncStorage from @react-native-async-storage/async-storage with key 'TASKS_DATA'",
+    "Create src/utils/date-helpers.ts with getCurrentWeekKey() returning 'YYYY-WW' format and isCurrentWeek(weekKey: string | undefined) boolean helper",
+    "Create src/hooks/use-tasks.ts: useState for tasks array, useEffect to load on mount, useEffect to save on change, functions addTask/updateTask/deleteTask/toggleComplete (sets completedAt and weekKey on complete), computed stats (totalCount, completedThisWeek filtering by isCurrentWeek, pendingCount)"
+  ],
+  "acceptance_criteria": [
+    "Task interface defined with all required fields in src/types/task.ts",
+    "AsyncStorage functions work for loading and saving task arrays",
+    "useTasks hook exposes tasks array and CRUD functions",
+    "Completed count filters by current week using weekKey comparison",
+    "toggleComplete sets isCompleted, completedAt timestamp, and weekKey on completion"
+  ],
+  "verification": [
+    "Run `npx tsc --noEmit` to verify types compile",
+    "Import useTasks in a test component and verify it returns expected shape"
+  ],
+  "blocked_reason": null,
+  "findings": "All acceptance criteria met. Task interface created with all required fields. AsyncStorage utilities (loadTasks/saveTasks) implemented with error handling. useTasks hook provides CRUD operations (addTask, updateTask, deleteTask, toggleComplete) with stats tracking. Weekly completion tracking uses computed filter via getCurrentWeekKey() and isCurrentWeek() helpers - non-destructive approach preserves all task data. TypeScript compilation and linting passed for all new files."
+}
