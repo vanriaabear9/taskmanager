@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Create Welcome screen and restructure navigation. Replace src/app/index.tsx with welcome screen (tasklogo image or green placeholder, title, subtitle, Get Started button). Create new tab group at src/app/(tabs)/ with _layout.tsx using NativeTabs for 4 tabs. Update root _layout.tsx to remove AppTabs component since tabs now live in (tabs) group.",
+  "status": "completed",
+  "steps": [
+    "Replace src/app/index.tsx entirely: import Image from expo-image, display tasklogo from assets/images/tasklogo.png with fallback to green View placeholder if image missing, title 'Manage your daily tasks', subtitle 'Personal Task Management App', green 'Get Started' button using Pressable that calls router.push('/(tabs)/home'), full green-themed styling with GreenTheme colors",
+    "Create src/app/(tabs)/_layout.tsx: NativeTabs with 4 triggers (home, tasks, calendar, settings) using emoji icons (🏠 📋 📅 ⚙️) or text, green theme colors from GreenTheme",
+    "Create placeholder files: src/app/(tabs)/calendar.tsx and src/app/(tabs)/settings.tsx both showing 'Coming Soon' text with ThemedView and ThemedText",
+    "Update src/app/_layout.tsx: keep ThemeProvider and AnimatedSplashOverlay, remove the AppTabs component import and usage (tabs now live in the (tabs) group, not root layout)",
+    "Keep src/components/app-tabs.tsx unchanged (may be used elsewhere or removed later by user)"
+  ],
+  "acceptance_criteria": [
+    "Welcome screen displays at app launch with image/placeholder, text, and button",
+    "Tapping 'Get Started' navigates to tabs layout",
+    "Tab bar shows 4 tabs with icons and labels",
+    "Calendar and Settings tabs render placeholder content",
+    "Navigation follows Expo Router (tabs) group pattern"
+  ],
+  "verification": [
+    "Run `npx tsc --noEmit` to verify types",
+    "Run `npx expo start` and open on a simulator/device",
+    "Verify welcome screen shows, button navigates to tabs, and all 4 tabs are visible"
+  ],
+  "blocked_reason": null,
+  "findings": "All acceptance criteria met. Welcome screen created at src/app/index.tsx with green-themed styling, showing checkmark placeholder (tasklogo.png can be added later), title 'Manage your daily tasks', subtitle 'Personal Task Management App', and 'Get Started' button that navigates to /(tabs)/home. Created tab navigation structure at src/app/(tabs)/_layout.tsx using NativeTabs with 4 tabs (🏠 Home, 📋 Tasks, 📅 Calendar, ⚙️ Settings) styled with GreenTheme colors. Created placeholder screens for all tabs (home.tsx, tasks.tsx, calendar.tsx, settings.tsx). Updated root layout (src/app/_layout.tsx) to use Slot instead of AppTabs component, enabling proper (tabs) group routing. TypeScript compilation passes. Linting passes for all modified/created files. Pre-existing lint error in src/hooks/use-color-scheme.web.ts is unrelated to this feature."
+}
