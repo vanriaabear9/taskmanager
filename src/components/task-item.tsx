@@ -1,11 +1,11 @@
 /**
  * TaskItem - Single task row component with checkbox, title, category badge, deadline, edit/delete buttons
  */
-import { StyleSheet, Pressable, View, Alert } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { GreenTheme, Spacing } from '@/constants/theme';
 import type { Task } from '@/types/task';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 interface TaskItemProps {
   task: Task;
@@ -56,6 +56,13 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
           <View style={styles.badge}>
             <ThemedText style={styles.badgeText}>
               {task.category === 'personal' ? 'Personal' : 'School'}
+            </ThemedText>
+          </View>
+
+          {/* Priority Badge */}
+          <View style={[styles.badge, task.isPriority ? styles.priorityBadge : styles.secondaryBadge]}>
+            <ThemedText style={styles.badgeText}>
+              {task.isPriority ? 'Priority' : 'Normal'}
             </ThemedText>
           </View>
           
@@ -146,6 +153,12 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.half,
     borderRadius: 6,
     backgroundColor: GreenTheme.light,
+  },
+  priorityBadge: {
+    backgroundColor: GreenTheme.primary,
+  },
+  secondaryBadge: {
+    backgroundColor: GreenTheme.medium,
   },
   badgeText: {
     fontSize: 12,

@@ -7,8 +7,10 @@ import { ThemedText } from '@/components/themed-text';
 import { BottomTabInset, GreenTheme, Spacing } from '@/constants/theme';
 import { useTasks } from '@/hooks/use-tasks';
 import type { Task } from '@/types/task';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, SafeAreaView, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type FilterType = 'all' | 'pending' | 'completed';
 
@@ -73,13 +75,21 @@ export default function TasksScreen() {
       <View style={styles.container}>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search tasks..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor={GreenTheme.gray}
-          />
+          <LinearGradient
+            colors={[GreenTheme.gradientStart, GreenTheme.gradientMid, GreenTheme.gradientEnd]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.searchBarGradient}
+          >
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholderTextColor={GreenTheme.white}
+              selectionColor={GreenTheme.gradientMid}
+            />
+          </LinearGradient>
         </View>
 
         {/* Filter Buttons */}
@@ -199,17 +209,25 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingHorizontal: Spacing.three,
-    paddingTop: Spacing.three,
+    paddingTop: Spacing.five,
     paddingBottom: Spacing.two,
   },
+  searchBarGradient: {
+    borderRadius: 16,
+    padding: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 4,
+  },
   searchInput: {
-    borderWidth: 2,
-    borderColor: GreenTheme.primary,
-    borderRadius: 12,
+    borderWidth: 0,
+    borderRadius: 14,
     padding: Spacing.three,
     fontSize: 16,
-    color: GreenTheme.black,
-    backgroundColor: GreenTheme.white,
+    color: GreenTheme.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
   },
   filterContainer: {
     flexDirection: 'row',

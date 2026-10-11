@@ -2,7 +2,7 @@
  * AddTaskModal - Modal for adding or editing tasks
  * Inputs: title, category (Personal/School), deadline (date + time pickers), priority toggle
  */
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerChangeEvent } from '@react-native-community/datetimepicker';
 
 import { ThemedText } from '@/components/themed-text';
 import { GreenTheme, Spacing } from '@/constants/theme';
@@ -46,18 +46,14 @@ export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskMo
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  const handleDateChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
+  const handleDateValueChange = (_event: DateTimePickerChangeEvent, selectedDate: Date) => {
     setShowDatePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setDeadlineDate(selectedDate);
-    }
+    setDeadlineDate(selectedDate);
   };
 
-  const handleTimeChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
+  const handleTimeValueChange = (_event: DateTimePickerChangeEvent, selectedDate: Date) => {
     setShowTimePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setDeadlineDate(selectedDate);
-    }
+    setDeadlineDate(selectedDate);
   };
 
   const formatDate = (date: Date) => {
@@ -198,7 +194,8 @@ export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskMo
                   value={deadlineDate}
                   mode="date"
                   display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                  onChange={handleDateChange}
+                  onValueChange={handleDateValueChange}
+                  onDismiss={() => setShowDatePicker(false)}
                   minimumDate={new Date()}
                 />
               )}
@@ -209,7 +206,8 @@ export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskMo
                   value={deadlineDate}
                   mode="time"
                   display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                  onChange={handleTimeChange}
+                  onValueChange={handleTimeValueChange}
+                  onDismiss={() => setShowTimePicker(false)}
                 />
               )}
             </View>

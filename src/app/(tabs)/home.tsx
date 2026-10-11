@@ -7,7 +7,8 @@ import { useTasks } from '@/hooks/use-tasks';
 import type { Task } from '@/types/task';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { FlatList, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const { tasks, stats, addTask, updateTask, deleteTask, toggleComplete } = useTasks();

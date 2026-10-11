@@ -1,10 +1,20 @@
 /**
  * Custom hook for task management with CRUD operations and weekly tracking
  */
-import { useState, useEffect, useCallback } from 'react';
+import { hasSupabaseConnection } from '@/lib/supabase';
 import type { Task } from '@/types/task';
-import { loadTasks, saveTasks } from '@/utils/storage';
 import { getCurrentWeekKey, isCurrentWeek } from '@/utils/date-helpers';
+import { loadTasks, saveTasks } from '@/utils/storage';
+import { loadTasksFromSupabase, syncTasksWithSupabase } from '@/utils/supabase-tasks';
+import { useCallback, useEffect, useState } from 'react';
+
+let sharedTasks: Task[] = [];
+let sharedIsLoading = true;
+const listeners = new Set<(tasks: Task[]) => void>();
+
+const notifyListeners = () => {
+  listeners.forEach((listener) => listener(sharedTasks));
+};
 
 export interface TaskStats {
   totalCount: number;
@@ -26,29 +36,66 @@ export interface UseTasks {
  * Hook for managing tasks with AsyncStorage persistence
  */
 export function useTasks(): UseTasks {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [tasks, setTasks] = useState<Task[]>(sharedTasks);
+  const [isLoading, setIsLoading] = useState(sharedIsLoading);
 
-  // Load tasks from storage on mount
   useEffect(() => {
-    loadTasks()
-      .then((loadedTasks) => {
-        setTasks(loadedTasks);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to load tasks:', error);
-        setIsLoading(false);
-      });
+    const updateTasks = (nextTasks: Task[]) => setTasks(nextTasks);
+    listeners.add(updateTasks);
+    setTasks(sharedTasks);
+    setIsLoading(sharedIsLoading);
+
+    return () => {
+      listeners.delete(updateTasks);
+    };
   }, []);
 
-  // Save tasks to storage whenever they change
+  // Load tasks from Supabase when configured, otherwise fall back to local storage
   useEffect(() => {
-    if (!isLoading) {
-      saveTasks(tasks).catch((error) => {
-        console.error('Failed to save tasks:', error);
-      });
+    const loadTasksFromSource = async () => {
+      try {
+        const loadedTasks = hasSupabaseConnection
+          ? await loadTasksFromSupabase()
+          : await loadTasks();
+
+        sharedTasks = loadedTasks;
+        sharedIsLoading = false;
+        notifyListeners();
+        setTasks(loadedTasks);
+      } catch (error) {
+        console.error('Failed to load tasks:', error);
+        sharedIsLoading = false;
+        notifyListeners();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (sharedIsLoading) {
+      loadTasksFromSource();
     }
+  }, []);
+
+  // Save tasks to Supabase when configured, otherwise persist locally
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    const persistTasks = async () => {
+      try {
+        if (hasSupabaseConnection) {
+          await syncTasksWithSupabase(tasks);
+          return;
+        }
+
+        await saveTasks(tasks);
+      } catch (error) {
+        console.error('Failed to save tasks:', error);
+      }
+    };
+
+    persistTasks();
   }, [tasks, isLoading]);
 
   // Add a new task
@@ -59,39 +106,50 @@ export function useTasks(): UseTasks {
       createdAt: new Date().toISOString(),
       isCompleted: false,
     };
-    setTasks((prev) => [...prev, newTask]);
+
+    const nextTasks = [...sharedTasks, newTask];
+    sharedTasks = nextTasks;
+    notifyListeners();
+    setTasks(nextTasks);
   }, []);
 
   // Update an existing task
   const updateTask = useCallback((id: string, updates: Partial<Task>) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, ...updates } : task
-      )
+    const nextTasks = sharedTasks.map((task) =>
+      task.id === id ? { ...task, ...updates } : task
     );
+
+    sharedTasks = nextTasks;
+    notifyListeners();
+    setTasks(nextTasks);
   }, []);
 
   // Delete a task
   const deleteTask = useCallback((id: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    const nextTasks = sharedTasks.filter((task) => task.id !== id);
+    sharedTasks = nextTasks;
+    notifyListeners();
+    setTasks(nextTasks);
   }, []);
 
   // Toggle task completion status
   const toggleComplete = useCallback((id: string) => {
-    setTasks((prev) =>
-      prev.map((task) => {
-        if (task.id === id) {
-          const isCompleted = !task.isCompleted;
-          return {
-            ...task,
-            isCompleted,
-            completedAt: isCompleted ? new Date().toISOString() : undefined,
-            weekKey: isCompleted ? getCurrentWeekKey() : undefined,
-          };
-        }
-        return task;
-      })
-    );
+    const nextTasks = sharedTasks.map((task) => {
+      if (task.id === id) {
+        const isCompleted = !task.isCompleted;
+        return {
+          ...task,
+          isCompleted,
+          completedAt: isCompleted ? new Date().toISOString() : undefined,
+          weekKey: isCompleted ? getCurrentWeekKey() : undefined,
+        };
+      }
+      return task;
+    });
+
+    sharedTasks = nextTasks;
+    notifyListeners();
+    setTasks(nextTasks);
   }, []);
 
   // Calculate statistics
