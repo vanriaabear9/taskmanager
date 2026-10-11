@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -14,12 +14,12 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Task Logo - Placeholder until tasklogo2.png is added */}
           <View style={styles.logoContainer}>
-            <View style={styles.logoPlaceholder}>
-              <ThemedText style={styles.checkEmoji}>✓</ThemedText>
-              <ThemedText style={styles.placeholderText}>Task Manager</ThemedText>
-            </View>
+            <Image
+              source={require('@/assets/newimages/tasklogo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
 
           {/* Title */}
@@ -63,35 +63,14 @@ const styles = StyleSheet.create({
     gap: Spacing.four,
   },
   logoContainer: {
-    width: 300,
-    height: 300,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: Spacing.four,
+    marginBottom: Spacing.two,
   },
   logo: {
-    width: 280,
-    height: 280,
-  },
-  logoPlaceholder: {
-    width: 280,
-    height: 280,
-    backgroundColor: GreenTheme.pale,
-    borderRadius: 30,
-    borderWidth: 3,
-    borderColor: GreenTheme.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.two,
-  },
-  checkEmoji: {
-    fontSize: 120,
-    color: GreenTheme.primary,
-  },
-  placeholderText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: GreenTheme.primary,
+    width: 220,
+    height: 220,
   },
   title: {
     fontSize: 32,
