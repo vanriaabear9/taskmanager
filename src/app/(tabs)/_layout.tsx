@@ -1,12 +1,8 @@
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { useColorScheme } from 'react-native';
 
 import { GreenTheme } from '@/constants/theme';
 
 export default function TabsLayout() {
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
-
   return (
     <NativeTabs
       backgroundColor={GreenTheme.gradientStart}
@@ -14,10 +10,13 @@ export default function TabsLayout() {
       tintColor={GreenTheme.white}
       labelVisibilityMode="labeled"
       labelStyle={{
-        selected: { color: GreenTheme.white, fontWeight: '700' },
-        default: { color: isDark ? '#eafaf1' : '#E8F5E9', fontWeight: '600' },
+        selected: { color: GreenTheme.white },
+        default: { color: 'rgba(255,255,255,0.8)' },
       }}
-      iconColor={{ default: '#E8F5E9', selected: GreenTheme.white }}>
+      iconColor={{
+        default: 'rgba(255,255,255,0.8)',
+        selected: GreenTheme.white,
+      }}>
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Label>🏠 Home</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>

@@ -73,24 +73,22 @@ export default function TasksScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <LinearGradient
-            colors={[GreenTheme.gradientStart, GreenTheme.gradientMid, GreenTheme.gradientEnd]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.searchBarGradient}
-          >
+        <LinearGradient
+          colors={[GreenTheme.gradientStart, GreenTheme.gradientMid, GreenTheme.gradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.taskHeader}
+        >
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
               placeholder="Search tasks..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              placeholderTextColor={GreenTheme.white}
-              selectionColor={GreenTheme.gradientMid}
+              placeholderTextColor="rgba(255,255,255,0.8)"
             />
-          </LinearGradient>
-        </View>
+          </View>
 
         {/* Filter Buttons */}
         <View style={styles.filterContainer}>
@@ -145,6 +143,7 @@ export default function TasksScreen() {
             </ThemedText>
           </Pressable>
         </View>
+        </LinearGradient>
 
         {/* Task List */}
         <FlatList
@@ -207,51 +206,46 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: GreenTheme.white,
   },
-  searchContainer: {
-    paddingHorizontal: Spacing.three,
+  taskHeader: {
     paddingTop: Spacing.five,
+    paddingBottom: Spacing.three,
+    paddingHorizontal: Spacing.three,
+    minHeight: 170,
+  },
+  searchContainer: {
+    paddingTop: Spacing.three,
     paddingBottom: Spacing.two,
   },
-  searchBarGradient: {
-    borderRadius: 16,
-    padding: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
-    elevation: 4,
-  },
   searchInput: {
-    borderWidth: 0,
-    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 16,
     padding: Spacing.three,
     fontSize: 16,
     color: GreenTheme.white,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(255,255,255,0.12)',
   },
   filterContainer: {
     flexDirection: 'row',
-    paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.three,
     gap: Spacing.two,
   },
   filterButton: {
     flex: 1,
     paddingVertical: Spacing.two,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: GreenTheme.lightGray,
-    backgroundColor: GreenTheme.white,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.6)',
+    backgroundColor: 'rgba(255,255,255,0.12)',
     alignItems: 'center',
   },
   filterButtonActive: {
-    borderColor: GreenTheme.primary,
-    backgroundColor: GreenTheme.primary,
+    borderColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: 'rgba(255,255,255,0.22)',
   },
   filterButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: GreenTheme.gray,
+    color: 'rgba(255,255,255,0.85)',
   },
   filterButtonTextActive: {
     color: GreenTheme.white,
