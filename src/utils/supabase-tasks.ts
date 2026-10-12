@@ -52,7 +52,7 @@ export async function loadTasksFromSupabase(): Promise<Task[]> {
 
       if (fallback.error) {
         console.error('Error loading tasks from Supabase with camelCase columns:', fallback.error);
-        return [];
+        throw fallback.error;
       }
 
       return (fallback.data ?? []).map(mapSupabaseTask);
@@ -61,7 +61,7 @@ export async function loadTasksFromSupabase(): Promise<Task[]> {
     return (data ?? []).map(mapSupabaseTask);
   } catch (error) {
     console.error('Unexpected error loading tasks from Supabase:', error);
-    return [];
+    throw error;
   }
 }
 

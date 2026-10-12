@@ -10,10 +10,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 let sharedTasks: Task[] = [];
 let sharedIsLoading = true;
-const listeners = new Set<(tasks: Task[]) => void>();
+let sharedLoadError: string | null = null;
+const listeners = new Set<(tasks: Task[], loadError?: string | null) => void>();
 
-const notifyListeners = () => {
-  listeners.forEach((listener) => listener(sharedTasks));
+const notifyListeners = (loadError?: string | null) => {
+  listeners.forEach((listener) => listener(sharedTasks, loadError));
 };
 
 export interface TaskStats {
@@ -30,6 +31,7 @@ export interface UseTasks {
   deleteTask: (id: string) => void;
   toggleComplete: (id: string) => void;
   isLoading: boolean;
+  loadError: string | null;
 }
 
 /**
@@ -38,12 +40,16 @@ export interface UseTasks {
 export function useTasks(): UseTasks {
   const [tasks, setTasks] = useState<Task[]>(sharedTasks);
   const [isLoading, setIsLoading] = useState(sharedIsLoading);
+  const [loadError, setLoadError] = useState<string | null>(sharedLoadError);
 
   useEffect(() => {
-    const updateTasks = (nextTasks: Task[]) => setTasks(nextTasks);
+    const updateTasks = (nextTasks: Task[], nextLoadError?: string | null) => {
+      setTasks(nextTasks);
+      if (nextLoadError !== undefined) {
+        setLoadError(nextLoadError);
+      }
+    };
     listeners.add(updateTasks);
-    setTasks(sharedTasks);
-    setIsLoading(sharedIsLoading);
 
     return () => {
       listeners.delete(updateTasks);
@@ -60,10 +66,14 @@ export function useTasks(): UseTasks {
 
         sharedTasks = loadedTasks;
         sharedIsLoading = false;
-        notifyListeners();
+        sharedLoadError = null;
+        notifyListeners(null);
         setTasks(loadedTasks);
       } catch (error) {
         console.error('Failed to load tasks:', error);
+        sharedLoadError = error instanceof Error ? error.message : 'Unable to load tasks.';
+        setLoadError(sharedLoadError);
+        notifyListeners(sharedLoadError);
         sharedIsLoading = false;
         notifyListeners();
       } finally {
@@ -169,5 +179,6 @@ export function useTasks(): UseTasks {
     deleteTask,
     toggleComplete,
     isLoading,
+    loadError,
   };
 }

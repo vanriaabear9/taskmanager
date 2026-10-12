@@ -30,13 +30,16 @@ interface AddTaskModalProps {
     isPriority: boolean;
   }) => void;
   editTask?: Task | null;
+  initialDate?: Date;
 }
 
-export function AddTaskModal({ visible, onClose, onSubmit, editTask }: AddTaskModalProps) {
+export function AddTaskModal({ visible, onClose, onSubmit, editTask, initialDate }: AddTaskModalProps) {
   // Derive initial values from editTask
   const initialTitle = editTask?.title ?? '';
   const initialCategory = editTask?.category ?? 'personal';
-  const initialDeadline = editTask?.deadline ? new Date(editTask.deadline) : new Date();
+  const initialDeadline = editTask?.deadline
+    ? new Date(editTask.deadline)
+    : initialDate ?? new Date();
   const initialPriority = editTask?.isPriority ?? false;
   
   const [title, setTitle] = useState(initialTitle);

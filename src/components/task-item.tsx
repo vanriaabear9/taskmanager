@@ -12,9 +12,10 @@ interface TaskItemProps {
   onToggle: (id: string) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
+  onPress?: (task: Task) => void;
 }
 
-export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onEdit, onDelete, onPress }: TaskItemProps) {
   const handleDelete = () => {
     Alert.alert(
       'Delete Task',
@@ -43,7 +44,11 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
       </Pressable>
 
       {/* Task Info */}
-      <View style={styles.content}>
+      <Pressable
+        style={styles.content}
+        onPress={() => onPress?.(task)}
+        disabled={!onPress}
+      >
         <ThemedText 
           style={[styles.title, task.isCompleted && styles.titleCompleted]}
           numberOfLines={2}
@@ -71,7 +76,7 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
             {formatDeadline(task.deadline)}
           </ThemedText>
         </View>
-      </View>
+      </Pressable>
 
       {/* Action Buttons */}
       <View style={styles.actions}>
