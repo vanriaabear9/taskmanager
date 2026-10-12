@@ -1,4 +1,5 @@
 import { AddTaskModal } from '@/components/add-task-modal';
+import { NotificationPanel, getTaskNotifications } from '@/components/notification-panel';
 import { TaskItem } from '@/components/task-item';
 import { ThemedText } from '@/components/themed-text';
 import { WeekDateSelector } from '@/components/week-date-selector';
@@ -6,14 +7,27 @@ import { BottomTabInset, GreenTheme, Spacing } from '@/constants/theme';
 import { useTasks } from '@/hooks/use-tasks';
 import type { Task } from '@/types/task';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
-  const { tasks, stats, addTask, updateTask, deleteTask, toggleComplete } = useTasks();
+  const { tasks, stats, addTask, updateTask, deleteTask, toggleComplete, refreshTasks } = useTasks();
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [notificationPanelVisible, setNotificationPanelVisible] = useState(false);
+  const [readNotificationKeys, setReadNotificationKeys] = useState<Set<string>>(() => new Set());
+  const notifications = useMemo(() => getTaskNotifications(tasks), [tasks]);
+  const hasUnreadNotifications = notifications.some(
+    (notification) => !readNotificationKeys.has(notification.key)
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      void refreshTasks();
+    }, [refreshTasks])
+  );
 
   const handleAddTask = () => {
     setEditingTask(null);
@@ -23,6 +37,15 @@ export default function HomeScreen() {
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
     setModalVisible(true);
+  };
+
+  const openNotifications = () => {
+    setReadNotificationKeys((previous) => {
+      const next = new Set(previous);
+      notifications.forEach((notification) => next.add(notification.key));
+      return next;
+    });
+    setNotificationPanelVisible(true);
   };
 
   const handleSubmitTask = (taskData: {
@@ -52,6 +75,16 @@ export default function HomeScreen() {
           end={{ x: 1, y: 1 }}
           style={styles.header}
         >
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Notifications${notifications.length ? `, ${notifications.length} available` : ''}`}
+            accessibilityState={{ expanded: notificationPanelVisible }}
+            onPress={openNotifications}
+            style={styles.notificationButton}
+          >
+            <ThemedText style={styles.bellIcon}>🔔</ThemedText>
+            {hasUnreadNotifications && <View style={styles.unreadIndicator} />}
+          </Pressable>
           <ThemedText style={styles.greeting}>
             Good day, Van! One small task at a time is still progress
           </ThemedText>
@@ -117,6 +150,16 @@ export default function HomeScreen() {
           onSubmit={handleSubmitTask}
           editTask={editingTask}
         />
+
+        <NotificationPanel
+          visible={notificationPanelVisible}
+          notifications={notifications}
+          onClose={() => setNotificationPanelVisible(false)}
+          onSelectNotification={(task) => {
+            setNotificationPanelVisible(false);
+            handleEditTask(task);
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -144,6 +187,34 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     marginTop: Spacing.three,
     marginBottom: Spacing.four,
+    paddingRight: 56,
+  },
+  notificationButton: {
+    position: 'absolute',
+    top: Spacing.two,
+    right: Spacing.three,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  bellIcon: {
+    fontSize: 21,
+    lineHeight: 28,
+  },
+  unreadIndicator: {
+    position: 'absolute',
+    top: 7,
+    right: 7,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: GreenTheme.pale,
+    borderWidth: 1,
+    borderColor: GreenTheme.dark,
   },
   statsContainer: {
     flexDirection: 'row',

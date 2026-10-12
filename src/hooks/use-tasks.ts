@@ -30,6 +30,7 @@ export interface UseTasks {
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   toggleComplete: (id: string) => void;
+  refreshTasks: () => Promise<void>;
   isLoading: boolean;
   loadError: string | null;
 }
@@ -54,6 +55,26 @@ export function useTasks(): UseTasks {
     return () => {
       listeners.delete(updateTasks);
     };
+  }, []);
+
+  const refreshTasks = useCallback(async () => {
+    if (sharedIsLoading) {
+      return;
+    }
+
+    try {
+      const loadedTasks = hasSupabaseConnection
+        ? await loadTasksFromSupabase()
+        : await loadTasks();
+
+      sharedTasks = loadedTasks;
+      sharedLoadError = null;
+      notifyListeners(null);
+    } catch (error) {
+      console.error('Failed to refresh tasks:', error);
+      sharedLoadError = error instanceof Error ? error.message : 'Unable to load tasks.';
+      notifyListeners(sharedLoadError);
+    }
   }, []);
 
   // Load tasks from Supabase when configured, otherwise fall back to local storage
@@ -178,6 +199,7 @@ export function useTasks(): UseTasks {
     updateTask,
     deleteTask,
     toggleComplete,
+    refreshTasks,
     isLoading,
     loadError,
   };
