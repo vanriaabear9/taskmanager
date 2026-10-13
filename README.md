@@ -25,15 +25,6 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Release an Android APK
-
-Android APK releases are built with EAS and attached to a GitHub Release. The APK is a standalone production build, not the development build used with Expo.
-
-1. Create an Expo access token and add it to the GitHub repository as an Actions secret named `EXPO_TOKEN` (Settings → Secrets and variables → Actions).
-2. Add `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` to the EAS project's **production** environment if the released app should connect to Supabase. These values are embedded in the client app.
-3. In GitHub, open **Actions → Release Android APK → Run workflow** and enter a new release tag such as `v1.0.0`. Alternatively, push a tag beginning with `v` to start a release.
-4. When the workflow completes, download `todo-app.apk` from the GitHub Release assets and install it on an Android device.
-
 ## Get a fresh project
 
 When you're ready, run:
