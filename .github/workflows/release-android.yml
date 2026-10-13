@@ -40,9 +40,15 @@ jobs:
             --platform android \
             --profile production \
             --non-interactive \
-            --wait \
-            --json > eas-build.json
+            --wait
 
+          npx --yes eas-cli@24.12.1 build:list \
+            --platform android \
+            --status finished \
+            --build-profile production \
+            --git-commit-hash "$GITHUB_SHA" \
+            --limit 1 \
+            --json > eas-build.json
           build_id="$(jq -er '.[0].id' eas-build.json)"
           npx --yes eas-cli@24.12.1 build:view "$build_id" --json > eas-build-details.json
           apk_url="$(jq -er '.artifacts.applicationArchiveUrl' eas-build-details.json)"
